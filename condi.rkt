@@ -1,15 +1,20 @@
 #| 
 Unfortunately, I don't yet detect a difference between the behavior of the condi defined here and the conde that's already part of the library.
 
-To write this, I
+This file is the result of the following:
 
-(1) copied the definition of conde, and everything it uses that needs modification, from [Racket's canonical mini-kanren implementation](https://github.com/miniKanren/Racket-miniKanren/blob/master/miniKanren/mk.rkt)
+  (1) 
+    copied the definition of conde, and everything it uses that 
+    would needs modification, from Racket's canonical mini-kanren 
+    implementation
+      https://github.com/miniKanren/Racket-miniKanren/blob/master/miniKanren/mk.rkt
 
-(See the file [conde.rkt](conde.rkt) for what that looked like before steps (2) and (3).)
+    (See the file conde.rkt for what that looked like 
+    before steps (2) and (3).)
 
-(2) changed some names to indicate `i`, and 
+  (2) changed some names to indicate `i`, and 
 
-(3) swapped the last two arguments to mplusi.
+  (3) swapped the last two arguments to mplusi.
 |#
 
 (define-syntax condi
