@@ -3,8 +3,9 @@ Unfortunately, I don't yet detect a difference between the behavior of the condi
 
 To write this, I
 
-(1) copied the definition of conde, and everything it uses that needs modification, from Racket's canonical mini-kanren implementation:
-https://github.com/miniKanren/Racket-miniKanren/blob/master/miniKanren/mk.rkt
+(1) copied the definition of conde, and everything it uses that needs modification, from [Racket's canonical mini-kanren implementation](https://github.com/miniKanren/Racket-miniKanren/blob/master/miniKanren/mk.rkt)
+
+(See the file [conde.rkt](conde.rkt) for what that looked like before steps (2) and (3).)
 
 (2) changed some names to indicate `i`, and 
 
@@ -26,6 +27,8 @@ https://github.com/miniKanren/Racket-miniKanren/blob/master/miniKanren/mk.rkt
     (case-inf a-inf
       (() (f))
       ((f^) (inc (mplusi (f) f^)))
+        ; I also tried swapping the last two values in this line,
+        ; but still I can't get condi to behave like it does in TRS.
       ((a) (choice a f))
       ((a f^) (choice a (lambdaf@ () (mplusi (f^) f)))))))
 
