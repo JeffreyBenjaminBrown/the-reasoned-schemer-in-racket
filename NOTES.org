@@ -1,0 +1,84 @@
+* TODO RESUME at p. 138, bottom
+* TODO RESUME at p. 87, frame 20 -- where I found condi broken
+* the *e and *i suite of functions differ in the last line of mplus|mplusi
+* TODO How to debug?
+* conde v. condi
+"condi behaves like conde , except that its values are interleaved."
+"condi does not ... wait until all the successful goals on a line are exhausted before it tries the next line."
+* tail recursion : for completion, not just speed
+It can keep something from infinite looping, by pinning down all fixed constraints before recursing.
+c.f. TRS 5:31)
+* references
+https://github.com/klutometis/reasoned-schemer/blob/master/reasoned-schemer.org#215
+* TODO I don't get the same thing in 5:60
+(run 1 (x )
+     (flatteno `((a b) c) x))
+* TODO Why is unnesting needed?
+They give this (frame 54 of chapter 3 of TRS):
+(define membero
+  (lambda (l x)
+    (conde ((nullo l) #u)
+           ((eq-caro l x) #s)
+           (else (fresh d)
+                 (cdro l d)
+                 (eq-caro d x)))))
+
+I had first written this instead:
+(define membero
+  (lambda (l x)
+    (conde ((nullo l) #u)
+           ((eq-caro l x) #s)
+           (else (eq-caro (cdr l) x)))))
+
+* TODO Why is the empty list not considered here?
+Reasoned Schemer, hapter 3, frame 47.
+It assumes z is nonempty.
+* free variables are reified in the order they are encountered when the reification is asked for
+That is, if I ask something to reify (x y), it doesn't matter what order x and y were encountered in the process they come from; x will always be _.0 and y _.1
+* if x==y and both are free, but behave like one variable, then
+They "co-refer" or "share", and reify to the same symbol.
+THey are still distinct variables, though -- even if they have the same name (e.g. from nested calls to "fresh (x)").
+* fresh ~ let
+(fresh vars conds) ~ "let these vars be fresh in the conds"
+* The Law of conde
+To get more values from conde, pretend that the successful conde line has failed, refreshing all variables that got an association from that line.
+* The First Commandment
+To transform a function whose value is a Boolean into a function whose value is a goal, replace cond with conde and unnest each question and answer. Unnest the answer #t (or #f) by replacing it with #s (or #u).
+* The Second Commandment
+To transform a function whose value is not a Boolean into a function whose value is a goal, add an extra argument to hold its value, replace cond with conde , and unnest each question and answer.
+* to ask for the bindings on multiple variables
+(run*
+ (r )
+ (fresh (x y)
+        (== 'split x )
+        (== 'pea y)
+        (== (list x y) r)
+* to transform a function whose value is Bool into one whose value is Goal
+"The First Commandment":
+replace cond with conde and unnest each question and answer. Unnest the answer #t (or #f) by replacing it with #s (or #u).
+
+* Whenever a conde line is guaranteed to fail, it is unnecessary.
+i.e. if the answer includes #u
+* TRICKY: Conde lines are pretended untrue even if that's impossible.
+For example, this (TRS 3:70)
+  (run 3 (x)
+      (membero 'e `(pasta e ,x fagioli)))
+yields '(_.0 e): The first time through it sees that e is in the list, so it doesn't matter what x is. But the second time through it ignorese that match, and then discovers that if x is e, it still succeeds.
+
+* TODO Why is this not reversing its input?
+(TRS, Chapter 3, frame 100)
+
+> (define memberrevo
+    (lambda (x l)
+      (conde
+       (#s
+        (fresh (d)
+               (cdro l d)
+               (memberrevo x d)))
+       (else (eq-caro l x)))))
+
+> (run* (x)
+    (memberrevo x `( pasta e fagioli)))
+'(pasta e fagioli)
+
+>
